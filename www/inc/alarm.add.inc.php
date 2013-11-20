@@ -162,6 +162,13 @@ include_once('lib/weckerpy.php');
                     <div class="form-group">
                         <label class="control-label" for="wecker_tts">TTS</label>
                         <textarea class="form-control" id="wecker_tts" rows="3" placeholder="Text to say"></textarea>
+                        <p class="help-block">The following Placeholder are possible:
+                          <ul class="help-block">
+                            <li>{time} for the current Time</li>
+                            <li>{temp} for the current temperature</li>
+                            <li>{wetter} for the current weather</li>
+                          </ul>
+                        </p>
                     </div>
                   
                     <button type="submit" class="btn btn-primary">Create Alarm</button>

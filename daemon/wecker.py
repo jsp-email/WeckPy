@@ -4,7 +4,12 @@ import time
 import xml.dom.minidom
 import datetime
 from threading import Thread
+
+
+from urllib2 import Request, urlopen
+import json
 import subprocess
+import logging
 
 class wecker:
     def __init__(self):
@@ -35,7 +40,8 @@ class wecker:
         s.send('setsocket:'+receiver+':'+str(status))
         s.close()
 
-    def weckeAuf(self, song = 1):
+    def weckeAuf(self, logger, song = 1):
+        logger.info("Wecke auf "+str(self.active_Wecker))
         os.system("mpd")
         os.system("mpc clear")
         os.system("mpc load "+self.active_Wecker['Playlist'])
@@ -51,9 +57,18 @@ class wecker:
           t.start()
         
         if 'TTS' in self.active_Wecker:
+          # Additional Infos
+          req = Request("http://api.openweathermap.org/data/2.5/weather?q=Ruit&units=metric&lang=de")
+          response = urlopen(req)
+          the_page = json.load(response)
+          wetter = the_page['weather'][0]['description']
+          temp = str(int(the_page['main']['temp']))
+          uhrzeit = str(datetime.datetime.strftime(datetime.datetime.now(), '%k Uhr %M'))
+          tts = self.active_Wecker['TTS'].format(wetter=wetter, temp = temp, time=uhrzeit)
           destination_language = 'de'
-          googleSpeechURL = "http://translate.google.com/translate_tts?tl=" + destination_language +"&q=" + self.active_Wecker['TTS']
-          subprocess.call(["mplayer",googleSpeechURL], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+          googleSpeechURL = "http://translate.google.com/translate_tts?tl=" + destination_language +"&q=" + tts
+          logger.info(googleSpeechURL)
+          subprocess.call(["mplayer",googleSpeechURL,"-af","volume=7"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def incVolume(self, sleepduration):
         vol = self.active_Wecker['startVol']
@@ -66,7 +81,6 @@ class wecker:
             
 
     def beendeWecker(self):
-        
         os.system("mpc stop ")
         
         for supply in self.active_Wecker['Power-Off']:
@@ -123,40 +137,39 @@ class wecker:
         
         return alarms
         
-    def checkAlarm(self):
+    def checkAlarm(self, logger):
         if self.weckerAn == False:
+            logger.debug("Check Alarms")
             alarms = self.leseAlarms()
             wochentag_jetzt = datetime.datetime.strftime(datetime.datetime.now(), '%A')
             for wecker in alarms.itervalues():
                 if wecker['Active'] == 1:
                     for tag in wecker['Wochentage']:
-                        #print wochentag_jetzt
-                        #print tag
+                        #logger.debug("Wochentag Jetzt "+  wochentag_jetzt)
+                        #logger.debug("Wochentag Test "+  tag)
                         if tag == wochentag_jetzt:
+                            logger.debug("Wochentag stimmt")
                             uhrzeit_jetzt = datetime.datetime.strftime(datetime.datetime.now(), '%H:%M')
                             uhrzeit_wecker = wecker['uhrzeit']
                             minutes = lambda zeit:sum([int(v)*60**(1-n) for n,v in enumerate(zeit.split(":"))])
-                            #print uhrzeit_jetzt
-                            #print uhrzeit_wecker
+                            #logger.debug("Uhrzeit Jetzt "+  uhrzeit_jetzt)
+                            #logger.debug("Uhrzeit Wecker "+  uhrzeit_wecker)
                             if minutes(uhrzeit_wecker) == minutes(uhrzeit_jetzt):
+                                logger.debug("Uhrzeit stimmt")
                                 if(self.istSmartphoneImWlan(self.IP_Smartphone)):
-                                    print 'Wecker ist jetzt an'
-                                    self.weckerAn = True
+                                    logger.info("Wecker ist jetzt an")
                                     self.active_Wecker = wecker
-                                    self.weckeAuf()
+                                    self.weckeAuf(logger=logger)
                                     if wecker['Dauer'] == 0:
-                                        return False
+                                        return 0
+                                    
+                                    self.weckerAn = True
                                     return self.active_Wecker['Dauer']
         return False
         
 if __name__ == '__main__':
     
     w = wecker()
-    #print w.checkAlarm()
-    
-    #t = Thread(target=w.incVolume, args=(30,))
-    #t.start()
-    #print w.leseAlarms()
-    #w.weckeAuf()
-    #w.checkAlarminDeltaMin(alarms = w.leseAlarms())
+
+
    
