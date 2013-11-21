@@ -11,8 +11,8 @@ class weckerApp():
 
     def __init__(self):
         self.stdin_path = '/dev/null'
-        self.stdout_path = '/dev/null'
-        self.stderr_path = '/dev/null'
+        self.stdout_path = '/dev/tty'
+        self.stderr_path = '/dev/tty'
         self.pidfile_path = '/var/run/wecker.pid'
         self.pidfile_timeout = 5
         self.wecker = wecker.wecker()
@@ -48,16 +48,24 @@ class weckerApp():
                 # Check alarms
                 alarmfile = "var/www/wecker/alarms.xml"
                 if not self.is_locked(alarmfile): 
-                    self.endtime = self.wecker.checkAlarm(logger)
-                
+                    self.endtime = self.wecker.checkAlarm()
+                    print self.endtime
+                    logger.debug("Endtime "+str(self.endtime))
+                    # endless
+                    if self.endtime == -1:
+                        print "sleep 61"
+                        logger.debug("Sleep 61")
+                        time.sleep(61)
+                        self.endtime = False
+                        
                 # no alarm to start
+                logger.debug("Endtime "+str(self.endtime))
                 if self.endtime == False:
+                    logger.debug("Sleep 30")
                     time.sleep(30)
-                # endless
-                if self.endtime == 0:
-                    time.sleep(61)
+                
             else:
-                logger.info("Alarm active "+self.endtime)
+                logger.info("Alarm active "+str(self.endtime))
                 # wait for end of alarm
                 if self.endtime != False:
                     logger.info("Warte "+str(self.endtime)+" minutes") 
@@ -67,7 +75,7 @@ class weckerApp():
                     self.endtime = False
                 
           
-app = weckerApp()
+
 
 logger = logging.getLogger("DaemonLog")
 logger.setLevel(logging.DEBUG)
@@ -76,7 +84,11 @@ handler = logging.FileHandler("/root/weckerPy/weckerApp.log")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+app = weckerApp()
+
+#sys.stdout = #logger
+#sys.stderr = #logger
 daemon_runner = runner.DaemonRunner(app)
-#This ensures that the logger file handle does not get closed during daemonization
+#This ensures that the #logger file handle does not get closed during daemonization
 daemon_runner.daemon_context.files_preserve=[handler.stream]
 daemon_runner.do_action()
