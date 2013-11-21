@@ -149,8 +149,13 @@ class wecker:
         return alarms
         
     def checkAlarm(self):
+        last_update_file = open("/var/www/wecker/last_update.txt", "w")
+        last_update_file.write(datetime.datetime.strftime(datetime.datetime.now(), '%H:%M'))
+        last_update_file.close()
+        
         logger = logging.getLogger("DaemonLog")
         logger.debug("Checkalarm in class "+str(self.weckerAn))
+        
         if self.weckerAn == False:
             alarms = self.leseAlarms()
             wochentag_jetzt = datetime.datetime.strftime(datetime.datetime.now(), '%A')
@@ -176,7 +181,7 @@ class wecker:
                                         return -1
                                     else:
                                         self.weckerAn = True
-                                        return self.active_Wecker['Dauer']
+                                        return self.active_Wecker['Dauer']                                        
         return False
         
 if __name__ == '__main__':
