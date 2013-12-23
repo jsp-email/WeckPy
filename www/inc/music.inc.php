@@ -43,6 +43,7 @@ define('CURRENTID', $mpd->playlist[$mpd->current_track_id]['Id']);
 if (isset($_POST['toadd'])) {
     $object = $_POST['toadd'];
 
+    $mpd->PLLOAD($object);
     $files = explode("\n", $mpd->SendCommand('lsinfo'));
 
     foreach ($files as $row) {
@@ -181,6 +182,27 @@ if (isset($_POST['toadd'])) {
             event.preventDefault();
 
         });
+        
+        $("#ampPower").click(function(event) {
+            $.get('lib/irremote.php?action=power');
+            event.preventDefault();
+        });
+        $("#ampMute").click(function(event) {
+            $.get('lib/irremote.php?action=volmute');
+            event.preventDefault();
+        });
+        $("#ampVolUp").click(function(event) {
+            $.get('lib/irremote.php?action=volup');
+            event.preventDefault();
+        });
+        $("#ampVolDown").click(function(event) {
+            $.get('lib/irremote.php?action=voldown');
+            event.preventDefault();
+        });
+        $("#ampSelect").click(function(event) {
+            $.get('lib/irremote.php?action=select');
+            event.preventDefault();
+        });
 
     });
     
@@ -233,6 +255,27 @@ if ($mpd->connected == FALSE) {
     ?>
 
     <div class="panel panel-default">
+      <div class="panel-heading">Verstaerker</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="btn-toolbar">
+                  <div class="btn-group">
+                        <button type="button" id="ampPower" title="amp on" class="btn btn-default"><img src="images/Power.png" /></button>
+                        <button type="button" id="ampSelect" title="amp select" class="btn btn-default"><img src="images/Source.png" /></button>
+                  </div>
+                  <div class="btn-group">
+                      <button type="button" id="ampMute" title="amp mute" class="btn btn-default"><img src="images/media-volume-0.png" /></button>
+                      <button type="button" id="ampVolDown" title="amp volume down" class="btn btn-default"><img src="images/media-volume-1.png" /></button>
+                      <button type="button" id="ampVolUp" title="amp volume up" class="btn btn-default"><img src="images/media-volume-3.png" /></button>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
         <div class="panel-heading">
         <div class="row">
           <div class="col-sm-6 col-md-6 col-lg-7">
@@ -271,40 +314,42 @@ if ($mpd->connected == FALSE) {
             ?>
               </div>
             <div class="col-sm-6 col-md-6 col-lg-5">
-            <div class="pull-right">
-                <span class="ajaxOutput">
-                    <span id="outVolup">Vol ++</span>
-                    <span id="outVoldown">Vol --</span>
-                    <span id="outNext">Next song</span>
-                    <span id="outPrev">Previous song</span>
-                    <span id="outPause">Paused</span>
-                    <span id="outPlay">Play</span>
-                </span>
-                Status: <?php if ($status != 'stopped'): ?><a href="#current"><?php echo $status ?></a><?php else: echo $status;
-            endif;
-            ?> | Songs: <?php echo $mpd->playlist_count ?> | Vol: <span id="currentvol"><?php echo $mpd->volume ?></span>%
-            </div>
+              <div class="pull-right">
+                  <span class="ajaxOutput">
+                      <span id="outVolup">Vol ++</span>
+                      <span id="outVoldown">Vol --</span>
+                      <span id="outNext">Next song</span>
+                      <span id="outPrev">Previous song</span>
+                      <span id="outPause">Paused</span>
+                      <span id="outPlay">Play</span>
+                  </span>
+                  Status: <?php if ($status != 'stopped'): ?><a href="#current"><?php echo $status ?></a><?php else: echo $status;
+              endif;
+              ?> | Songs: <?php echo $mpd->playlist_count ?> | Vol: <span id="currentvol"><?php echo $mpd->volume ?></span>%
+              </div>
             </div>
         </div>
         </div>
         
         <div class="panel-body">
           <div class="row">
-            <div class="btn-toolbar pull-right" role="navigation">
-                <div class="btn-group">
-                    <button type="button" id="volDown" title="Vol down" class="btn btn-default"><img src="images/sound_down.png" alt="Vol down" /></button>
-                    <button type="button" id="volUp" title="Vol up" class="btn btn-default"><img src="images/sound_up.png" alt="Vol up" /></button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" id="prev" title="Previous" class="btn btn-default"><img src="images/control_rewind.png" alt="Previous" /></button>
-                    <?php if ($mpd->state == 'pause' || $mpd->state == 'stop'): ?>
-                        <button type="button" id="play" title="Play" class="btn btn-default"><img src="images/control_play.png" alt="Play" /></button>
-    <?php else: ?>
-                        <button type="button" id="pause" title="Pause" class="btn btn-default"><img src="images/control_pause.png" alt="Pause" /></button>
-    <?php endif; ?>
-                    <button type="button" id="stop" title="Stop" class="btn btn-default"><img src="images/control_stop.png" alt="Stop" /></button>
-                    <button type="button" id="next" title="Next" class="btn btn-default"><img src="images/control_fastforward.png" alt="Fastforward" /></button>
-                </div>
+            <div class="col-sm-12">
+              <div class="btn-toolbar pull-left" role="navigation">
+                  <div class="btn-group">
+                      <button type="button" id="volDown" title="Vol down" class="btn btn-default"><img src="images/media-volume-1.png" alt="Vol down" /></button>
+                      <button type="button" id="volUp" title="Vol up" class="btn btn-default"><img src="images/media-volume-3.png" alt="Vol up" /></button>
+                  </div>
+                  <div class="btn-group">
+                      <button type="button" id="prev" title="Previous" class="btn btn-default"><img src="images/media-previous.png" alt="Previous" /></button>
+                      <?php if ($mpd->state == 'pause' || $mpd->state == 'stop'): ?>
+                          <button type="button" id="play" title="Play" class="btn btn-default"><img src="images/media-pause.png" alt="Play" /></button>
+      <?php else: ?>
+                          <button type="button" id="pause" title="Pause" class="btn btn-default"><img src="images/media-play-pause-resume.png" alt="Pause" /></button>
+      <?php endif; ?>
+                      <button type="button" id="stop" title="Stop" class="btn btn-default"><img src="images/media-stop.png" alt="Stop" /></button>
+                      <button type="button" id="next" title="Next" class="btn btn-default"><img src="images/media-next.png" alt="Fastforward" /></button>
+                  </div>
+              </div>
             </div>
           </div> 
             <div class="row">

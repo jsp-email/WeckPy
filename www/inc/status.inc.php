@@ -125,15 +125,37 @@ foreach ($network as $index => $net) {
                 RAM:
             </div>
             <div class="col-xs-6  col-sm-8 col-md-10">
-                <?= $data['memoryPercentDisplay'] ?> %    (<?= $data['memoryUsed'] ?> / <?= $data['memoryTotal'] ?> )
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="<?= $data['memoryPercentDisplay'] ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $data['memoryPercentDisplay'] ?>%;">
+                      <span class="sr-only"><?= $data['memoryPercentDisplay'] ?>% Complete</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                    (<?= $data['memoryUsed'] ?> / <?= $data['memoryTotal'] ?> )
+                </div>
             </div>
+          </div>
         </div>
         <div class="row">
             <div class="col-xs-6 col-sm-4 col-md-2" style="text-align: right">
                 SWAP:
             </div>
             <div class="col-xs-6  col-sm-8 col-md-10">
-                <?= $data['swapPercentDisplay'] ?>  %  (<?= $data['swapUsed'] ?> / <?= $data['swapTotal'] ?> )
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="<?= $data['swapPercentDisplay'] ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $data['swapPercentDisplay'] ?>%;">
+                      <span class="sr-only"><?= $data['swapPercentDisplay'] ?>% Complete</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                    (<?= $data['swapUsed'] ?> / <?= $data['swapTotal'] ?> )
+                </div>
+              </div>
             </div>
         </div>
     </div>

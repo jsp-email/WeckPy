@@ -42,6 +42,7 @@ class weckerApp():
         return locked
     
     def run(self):
+        logger.info("Start Daemon...")
         while True:
             if self.endtime == False:
                 logger.debug("Check Alarm")
@@ -80,7 +81,7 @@ class weckerApp():
 logger = logging.getLogger("DaemonLog")
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-handler = logging.FileHandler("/root/weckerPy/weckerApp.log")
+handler = logging.FileHandler("/home/pi/weckerPy/weckerApp.log")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 

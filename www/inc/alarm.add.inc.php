@@ -110,7 +110,7 @@ include_once('lib/weckerpy.php');
                     
                     <div class="form-group">
                         <label class="control-label" for="wecker_start_volume">Start Volume</label>
-                        <input class="form-control" id="wecker_start_volume" type="number" size="1"  value="70" class="nomargb">
+                        <input class="form-control" id="wecker_start_volume" type="number" size="1"  value="30" class="nomargb">
                     </div>
                     <div class="checkbox" id="wecker_fade">
                          <label for="wecker_fadestatus">
@@ -119,7 +119,7 @@ include_once('lib/weckerpy.php');
                     <div id="fade_div">
                       <div class="form-group">
                           <label class="control-label" for="wecker_end_volume">End Volume</label>
-                          <input class="form-control" id="wecker_end_volume" type="number" size="1"  value="85" class="nomargb">
+                          <input class="form-control" id="wecker_end_volume" type="number" size="1"  value="45" class="nomargb">
                       </div>
                     </div>
                       

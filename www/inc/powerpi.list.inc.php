@@ -64,8 +64,8 @@ for ($i = 0; $i < count($sockets); $i++) {
     $sockets_out .= "<li>
                       <div class=\"button socket\">
                         <div class=\"button_text\">{$sockets[$i]['name']}</div>
-                        <div class=\"button_off\" socket-name=\"{$sockets[$i]['name']}\">OFF</div>
-                        <div class=\"button_on\" socket-name=\"{$sockets[$i]['name']}\">ON</div> 
+                        <div class=\"button_off button\" socket-name=\"{$sockets[$i]['name']}\">OFF</div>
+                        <div class=\"button_on button\" socket-name=\"{$sockets[$i]['name']}\">ON</div> 
                       </div>
                      </li>";
                      
@@ -83,8 +83,8 @@ if ($sockets_out != '') {
             </div>
           <div class="col-xs-8 col-sm-8 col-md-8 col-lg-10">
             <div class="pull-right" style="margin-right:10px;">  
-              <div class="button_off all">OFF</div>
-              <div class="button_on all">ON</div> 
+              <div class="button_off button all">OFF</div>
+              <div class="button_on button all">ON</div> 
             </div>
           </div>
         </div>
@@ -104,8 +104,8 @@ for ($i = 0; $i < count($gpios); $i++) {
     $gpios_out .= "<li>
                           <div class=\"button gpio\">
                               <div class=\"button_text\">{$gpios[$i]['name']}</div>
-                              <div class=\"button_off\" gpio-name=\"{$gpios[$i]['name']}\">OFF</div>
-                              <div class=\"button_on\" gpio-name=\"{$gpios[$i]['name']}\">ON</div> 
+                              <div class=\"button_off button\" gpio-name=\"{$gpios[$i]['name']}\">OFF</div>
+                              <div class=\"button_on button\" gpio-name=\"{$gpios[$i]['name']}\">ON</div> 
                             </div>
                           </li>";
 }

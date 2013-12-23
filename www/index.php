@@ -10,7 +10,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="content-language" content="en">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
    
   
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
@@ -27,6 +27,13 @@
   <script src="js/jquery-1.10.2.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/flatui-checkbox.js"></script>
+  <script src="js/fastclick.js"></script>
+  
+  <script>
+  $(function() {
+    FastClick.attach(document.body);
+  });
+  </script
   
 </head>
 
@@ -64,6 +71,7 @@
                   <li <?php if($_GET["action"] == "music"){ echo 'class="active"';} ?>>
                     <a href="./index.php?action=music">Music</a>
                   </li>
+                  
                    <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
                     <ul class="dropdown-menu">

@@ -39,6 +39,8 @@ class wecker:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(('127.0.0.1', 6677))
         s.send('setsocket:'+receiver+':'+str(status))
+        if receiver == 'Verstaerker':
+            os.system("irsend SEND_ONCE auna KEY_POWER")
         s.close()
 
     def weckeAuf(self, song = 1):
@@ -46,13 +48,12 @@ class wecker:
         logger.info("Wecke auf "+str(self.active_Wecker))
         os.system("mpd")
         os.system("mpc clear")
-        os.system("mpc load "+self.active_Wecker['Playlist'])
-        os.system("mpc volume "+str(self.active_Wecker['startVol']))
         
         for supply in self.active_Wecker['Power-On']:
           self.schalte(supply, 1)
           
         if 'TTS' in self.active_Wecker:
+          
           # Additional Infos
           req = Request("http://api.openweathermap.org/data/2.5/weather?q=Ruit&units=metric&lang=de")
           response = urlopen(req)
@@ -60,15 +61,17 @@ class wecker:
           wetter = the_page['weather'][0]['description'].encode('utf-8')
           temp = str(int(the_page['main']['temp']))
           uhrzeit = str(datetime.datetime.strftime(datetime.datetime.now(), '%H Uhr %M'))+" "
-          tts = self.active_Wecker['TTS'].format(wetter=wetter, temp = temp, time=uhrzeit)         
+          tts = self.active_Wecker['TTS'].encode('utf-8')
+          tts = tts.format(wetter=wetter, temp = temp, time=uhrzeit)         
           destination_language = 'de'
           googleSpeechURL = "http://translate.google.com/translate_tts?tl=" + destination_language +"&q=" + tts + "&ie=UTF-8"
           print googleSpeechURL
           logger.info(googleSpeechURL)
-          subprocess.call(["mplayer",googleSpeechURL,"-af","volume=8"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-          #os.system("mplayer "+googleSpeechURL+" -af volume=8")
-          #time.sleep(5)
-          
+          os.system("mpc volume 100")
+          subprocess.call(["mplayer",googleSpeechURL], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        os.system("mpc load "+self.active_Wecker['Playlist'])
+        os.system("mpc volume "+str(self.active_Wecker['startVol']))  
         os.system("mpc play "+str(song))
         
         if self.active_Wecker['Fade'] == 1:
@@ -87,7 +90,7 @@ class wecker:
                 exit()
             time.sleep(sleepduration)
             logger.info("Fade "+str(vol)+" -> "+str(vol+ self.incVol))
-            print "Fade "+str(vol)+" -> "+str(vol+ self.incVol)            
+            print "Fade "+str(vol)+" -> "+str(vol + self.incVol)            
             vol = vol + self.incVol
             os.system("mpc volume "+str(vol))
             
